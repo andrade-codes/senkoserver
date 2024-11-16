@@ -1,7 +1,12 @@
+use crate::files::FileInfo;
 use hyper::{Body, Request, Response};
-use std::{convert::Infallible, fs, path::Path};
+use std::collections::HashMap;
+use std::convert::Infallible;
 
-pub async fn handle_request(req: Request<Body>) -> Result<Response<Body>, Infallible> {
+pub async fn handle_request(
+    req: Request<Body>,
+    files_info: HashMap<String, FileInfo>,
+) -> Result<Response<Body>, Infallible> {
     if req.method() != hyper::Method::GET {
         return Ok(Response::builder()
             .status(405) // Method Not Allowed
@@ -9,17 +14,11 @@ pub async fn handle_request(req: Request<Body>) -> Result<Response<Body>, Infall
             .unwrap());
     }
 
-    let path = format!("./www{}", req.uri().path());
-    let file_path = Path::new(&path);
+    // Obtém a chave diretamente do URI, removendo o prefixo /www
+    let key = req.uri().path().to_string();
 
-    if file_path.exists() && file_path.is_file() {
-        match fs::read_to_string(file_path) {
-            Ok(contents) => Ok(Response::new(Body::from(contents))),
-            Err(_) => Ok(Response::builder()
-                .status(500) // Internal Server Error
-                .body(Body::from("Internal Server Error"))
-                .unwrap()),
-        }
+    if let Some(file_info) = files_info.get(&key) {
+        Ok(Response::new(Body::from(file_info.content.clone())))
     } else {
         Ok(Response::builder()
             .status(404) // Not Found
