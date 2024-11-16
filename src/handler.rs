@@ -1,5 +1,5 @@
-use std::{convert::Infallible, fs, path::Path};
 use hyper::{Body, Request, Response};
+use std::{convert::Infallible, fs, path::Path};
 
 pub async fn handle_request(req: Request<Body>) -> Result<Response<Body>, Infallible> {
     if req.method() != hyper::Method::GET {
@@ -26,4 +26,4 @@ pub async fn handle_request(req: Request<Body>) -> Result<Response<Body>, Infall
             .body(Body::from("File Not Found"))
             .unwrap())
     }
-} 
+}
