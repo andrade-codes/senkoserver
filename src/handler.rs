@@ -15,7 +15,11 @@ pub async fn handle_request(
     }
 
     // Obtém a chave diretamente do URI, removendo o prefixo /www
-    let key = req.uri().path().to_string();
+    let mut key = req.uri().path().to_string();
+
+    if key.ends_with('/') {
+        key.push_str("index.html");
+    }
 
     if let Some(file_info) = files_info.get(&key) {
         Ok(Response::new(Body::from(file_info.content.clone())))
