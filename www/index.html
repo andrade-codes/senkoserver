@@ -7,21 +7,27 @@
     <style>
       body {
         font-family: Arial, sans-serif;
-        background-color: #f4f4f4;
-        color: #333;
+        background-color: #000;
+        color: #fff;
         margin: 0;
         padding: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
       }
       h1 {
-        color: #007bff;
+        color: #fff;
+        margin-top: 20px;
       }
       .container {
-        max-width: 800px;
-        margin: auto;
-        background: white;
-        padding: 20px;
-        border-radius: 5px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        text-align: center;
+      }
+      img {
+        max-width: 100%;
+        height: auto;
+        margin-bottom: 20px;
       }
       footer {
         margin-top: 20px;
@@ -33,15 +39,9 @@
   </head>
   <body>
     <div class="container">
+      <img src="/images/senko.png" alt="Senko Server Logo" />
       <h1>Welcome to Senko Server</h1>
-      <p>A simple web server created to efficiently serve static files.</p>
-      <p>
-        The project was developed to learn about web servers using Rust and to
-        serve as a proof of concept to evaluate its efficiency compared to other
-        projects serving the same static files. The files are kept in memory,
-        reducing the time and resources needed to access them each time a
-        request is made.
-      </p>
+      <p>Fast and reliable static file serving, built with Rust.</p>
     </div>
     <footer>
       <p>&copy; 2024 Senko Server. All rights reserved.</p>
