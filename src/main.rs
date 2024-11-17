@@ -12,11 +12,13 @@ mod handler;
 #[tokio::main]
 async fn main() {
     // Coletar informações dos arquivos
-    let files_info = collect_files_info("www").unwrap_or_default();
+
+    let path = "www";
+    let files_info = collect_files_info(path).unwrap_or_default();
 
     //print files_info
     // for (key, value) in files_info.iter() {
-    //     println!("{}: {:?}", key, value);
+    //     println!("{}: {:?}", key, value.hash);
     // }
 
     let make_svc = make_service_fn(move |_conn| {
