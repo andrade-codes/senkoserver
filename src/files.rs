@@ -1,11 +1,10 @@
-use notify::{Config, Event, EventKind, RecommendedWatcher, RecursiveMode, Watcher};
+use notify::{Config, EventKind, RecommendedWatcher, RecursiveMode, Watcher};
 use sha2::{Digest, Sha256};
 use std::collections::HashMap;
 use std::fs;
-use std::path::{Path, PathBuf};
+use std::path::Path;
 use std::sync::mpsc as std_mpsc;
 use std::thread;
-use tokio::sync::mpsc::{self, Receiver};
 
 #[derive(Debug, Clone)]
 pub struct FileInfo {
@@ -29,7 +28,7 @@ pub fn collect_files_info(dir_path: &str) -> std::io::Result<HashMap<String, Fil
                             stack.push(path.display().to_string());
                         } else if metadata.is_file() {
                             if let Some(file_info) = get_file_info(&path, dir_path) {
-                                println!("Loaded file: {}", file_info.path);
+                                // println!("Loaded file: {}", file_info.path);
                                 files_info.insert(file_info.path.clone(), file_info);
                             }
                         }
@@ -68,7 +67,7 @@ pub fn watch_files(
     dir_path: &str,
     on_change: impl Fn(&HashMap<String, FileInfo>) + Send + Sync + 'static,
 ) -> notify::Result<RecommendedWatcher> {
-    println!("Starting file watcher for directory: {}", dir_path);
+    // println!("Starting file watcher for directory: {}", dir_path);
 
     let dir_path = dir_path.to_string();
     let (tx, rx) = std_mpsc::channel();
