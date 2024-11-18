@@ -45,7 +45,7 @@ Rust (latest stable version)
 
 ### Usage
 
-By default, the server runs on http://127.0.0.1:8080.
+By default, the server runs on http://127.0.0.1:8787.
 Serve static files by placing them in the www/ directory (default location).
 
 ## Roadmap
