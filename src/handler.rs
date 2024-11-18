@@ -5,7 +5,7 @@ use std::convert::Infallible;
 
 pub async fn handle_request(
     req: Request<Body>,
-    files_info: HashMap<String, FileInfo>,
+    files_info: HashMap<String, FileInfo>, // Certifique-se de que esse HashMap está atualizado
 ) -> Result<Response<Body>, Infallible> {
     if req.method() != hyper::Method::GET {
         return Ok(Response::builder()
@@ -14,9 +14,7 @@ pub async fn handle_request(
             .unwrap());
     }
 
-    // Obtém a chave diretamente do URI, removendo o prefixo /www
     let mut key = req.uri().path().to_string();
-
     if key.ends_with('/') {
         key.push_str("index.html");
     }
