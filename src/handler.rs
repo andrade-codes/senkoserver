@@ -5,11 +5,11 @@ use std::convert::Infallible;
 
 pub async fn handle_request(
     req: Request<Body>,
-    files_info: HashMap<String, FileInfo>, // Certifique-se de que esse HashMap está atualizado
+    files_info: HashMap<String, FileInfo>,
 ) -> Result<Response<Body>, Infallible> {
     if req.method() != hyper::Method::GET {
         return Ok(Response::builder()
-            .status(405) // Method Not Allowed
+            .status(405)
             .body(Body::from("Method Not Allowed"))
             .unwrap());
     }
@@ -23,7 +23,7 @@ pub async fn handle_request(
         Ok(Response::new(Body::from(file_info.content.clone())))
     } else {
         Ok(Response::builder()
-            .status(404) // Not Found
+            .status(404)
             .body(Body::from("File Not Found"))
             .unwrap())
     }
