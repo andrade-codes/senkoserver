@@ -3,6 +3,7 @@ use sha2::{Digest, Sha256};
 use std::collections::HashMap;
 use std::fs;
 use std::path::Path;
+use std::path::PathBuf;
 use std::sync::mpsc as std_mpsc;
 use std::thread;
 
@@ -46,13 +47,19 @@ pub fn collect_files_info(dir_path: &str) -> std::io::Result<HashMap<String, Fil
 fn get_file_info(path: &Path, dir_path: &str) -> Option<FileInfo> {
     if let Ok(content) = fs::read(path) {
         let hash = calculate_hash(&content);
+
+        // Normaliza o caminho absoluto
+        let dir_path = PathBuf::from(dir_path).canonicalize().unwrap();
+        let path = path.canonicalize().unwrap();
+
+        // Remove o prefixo do caminho base
         let relative_path = format!(
             "/{}",
-            path.strip_prefix(dir_path)
-                .unwrap_or(path)
+            path.strip_prefix(&dir_path)
+                .unwrap_or_else(|_| path.as_path())
                 .display()
-                .to_string()
         );
+
         Some(FileInfo {
             path: relative_path,
             hash,
@@ -87,12 +94,12 @@ pub fn watch_files(
         for res in rx {
             match res {
                 Ok(event) => {
-                    println!("Event detected: {:?}", event);
+                    // println!("Event detected: {:?}", event);
 
                     match event.kind {
                         EventKind::Create(_) | EventKind::Modify(_) => {
                             if let Some(file_path) = event.paths.first() {
-                                println!("File changed: {:?}", file_path);
+                                // println!("File changed: {:?}", file_path);
                                 if let Some(file_info) = get_file_info(file_path, &dir_path) {
                                     files_info.insert(file_info.path.clone(), file_info);
                                 }
@@ -100,7 +107,7 @@ pub fn watch_files(
                         }
                         EventKind::Remove(_) => {
                             if let Some(file_path) = event.paths.first() {
-                                println!("File removed: {:?}", file_path);
+                                // println!("File removed: {:?}", file_path);
                                 if let Ok(relative_path) = file_path.strip_prefix(&dir_path) {
                                     let relative_path = format!("/{}", relative_path.display());
                                     files_info.remove(&relative_path);
@@ -110,11 +117,11 @@ pub fn watch_files(
                         _ => {}
                     }
 
-                    println!("Updated files_info: {:?}", files_info.keys());
+                    // println!("Updated files_info: {:?}", files_info.keys());
                     on_change(&files_info);
                 }
                 Err(e) => {
-                    println!("Watch error: {:?}", e);
+                    eprintln!("Watch error: {:?}", e);
                 }
             }
         }
